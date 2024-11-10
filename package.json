@@ -23,7 +23,7 @@
 		}
 	},
 	"devDependencies": {
-		"@mdi/font": "^7.2.96",
+		"@mdi/font": "^7.3.67",
 		"@nuxtjs/apollo": "^5.0.0-alpha.9",
 		"@nuxtjs/eslint-config-typescript": "^12.0.0",
 		"cz-conventional-changelog": "^3.3.0",

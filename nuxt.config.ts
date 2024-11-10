@@ -15,5 +15,14 @@ export default defineNuxtConfig({
 	vite: {
 		plugins: [vuetify()],
 	},
-	modules: ['@nuxtjs/apollo', ['@pinia/nuxt', { autoImports: ['defineStore', 'acceptHMRUpdate'] }]],
+	modules: [
+		'@nuxtjs/apollo',
+		[
+			'@pinia/nuxt',
+			{
+				autoImports: ['defineStore', 'acceptHMRUpdate'],
+			},
+		],
+	],
+	css: ['vuetify/styles', '@mdi/font/css/materialdesignicons.css', 'assets/transition.css'],
 })
