@@ -1,0 +1,161 @@
+/* Desktop (large screens) */
+@media (width >= 1600px) {
+	body {
+		font-size: 18px;
+	}
+
+	h1 {
+		font-size: 60px !important;
+	}
+
+	h2 {
+		font-size: 40px !important;
+	}
+
+	h3 {
+		font-size: xx-large;
+	}
+
+	h5 {
+		font-size: larger !important;
+	}
+
+	p {
+		font-size: medium !important;
+	}
+}
+
+/* Desktop (large screens) */
+@media (width >= 1200px) {
+	body {
+		font-size: 18px;
+	}
+
+	h1 {
+		font-size: 60px !important;
+	}
+
+	h2 {
+		font-size: 40px !important;
+	}
+
+	h3 {
+		font-size: xx-large;
+	}
+
+	h5 {
+		font-size: x-large !important;
+	}
+
+	p {
+		font-size: medium !important;
+		font-weight: lighter !important;
+	}
+}
+
+/* Laptop (medium screens) */
+@media (width >= 992px) and (width <= 1199px) {
+	body {
+		font-size: 16px;
+	}
+
+	h1 {
+		font-size: 40px !important;
+	}
+
+	h2 {
+		font-size: 40px !important;
+	}
+
+	h3 {
+		font-size: xx-large;
+	}
+
+	h5 {
+		font-size: large !important;
+	}
+
+	p {
+		font-size: small !important;
+	}
+}
+
+/* Tablet (small screens) */
+@media (width >= 768px) and (width <= 991px) {
+	body {
+		font-size: 15px;
+	}
+
+	h1 {
+		font-size: 40px !important;
+	}
+
+	h2 {
+		font-size: 40px !important;
+	}
+
+	h3 {
+		font-size: x-large;
+	}
+
+	h5 {
+		font-size: large !important;
+	}
+
+	p {
+		font-size: small !important;
+	}
+}
+
+@media (width >= 500px) and (width <= 767px) {
+	body {
+		font-size: 15px;
+	}
+
+	h1 {
+		font-size: 40px !important;
+	}
+
+	h2 {
+		font-size: 40px !important;
+	}
+
+	h3 {
+		font-size: x-large;
+	}
+
+	h5 {
+		font-size: large !important;
+	}
+
+	p {
+		font-size: small !important;
+	}
+}
+
+/* Mobile (extra small screens) */
+@media (width <= 499px) {
+	body {
+		font-size: 14px;
+	}
+
+	h1 {
+		font-size: xx-large !important;
+	}
+
+	h2 {
+		font-size: x-large !important;
+	}
+
+	h3 {
+		font-size: x-large;
+	}
+
+	h5 {
+		font-size: medium !important;
+	}
+
+	p {
+		font-size: x-small !important;
+	}
+}
