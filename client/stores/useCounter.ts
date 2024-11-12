@@ -7,6 +7,7 @@ export const useCounter = defineStore('counter', {
 		pageTitle: 'Home',
 		launches: [] as Launch[],
 		loading: false,
+		windowWidth: process.client ? window.innerWidth : null,
 	}),
 	getters: {
 		doubleCount: (state) => state.count * 2,
@@ -15,7 +16,10 @@ export const useCounter = defineStore('counter', {
 		increment() {
 			this.count++
 		},
-
+		setWindowWidth(width: number) {
+			this.windowWidth = width
+			console.log(this.windowWidth)
+		},
 		getLaunchesData() {
 			this.loading = true
 
