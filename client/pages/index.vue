@@ -1,6 +1,6 @@
 <template>
 	<v-container>
-		<section>
+		<!-- <section>
 			<h2>
 				<v-icon icon="mdi-vuetify" />
 				Starter Template
@@ -79,7 +79,7 @@
 					<v-btn color="deep-purple lighten-2">Reserve</v-btn>
 				</v-card-actions>
 			</v-card>
-		</section>
+		</section> -->
 
 		<section>
 			<h3 class="my-5">
@@ -108,8 +108,8 @@
 	</v-container>
 </template>
 <script lang="ts" setup>
-const store = useCounter()
-const selection = ref(0)
+// const store = useCounter()
+// const selection = ref(0)
 const query = gql`
 	query getShips {
 		ships {
