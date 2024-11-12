@@ -1,12 +1,12 @@
 export const useFilter = () => {
 	const filteredItems = ref([])
 
-	const filterItems = (items, query) => {
-		if (!query) {
+	const filterItems = (items, itemToFilter, search) => {
+		if (!search) {
 			filteredItems.value = items
 		} else {
 			filteredItems.value = items.filter((item) =>
-				item.name.toLowerCase().includes(query.toLowerCase()),
+				item[itemToFilter].toLowerCase().includes(search.toLowerCase()),
 			)
 		}
 	}
