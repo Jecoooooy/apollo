@@ -2,7 +2,12 @@
 	<v-container class="position-relative h-100">
 		<v-row class="text-secondary py-4">
 			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3">
-				<v-text-field label="search" prepend-inner-icon="mdi-magnify" />
+				<v-text-field
+					v-model="search"
+					label="search"
+					prepend-inner-icon="mdi-magnify"
+					@input="onFilter"
+				/>
 			</v-col>
 			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3">
 				<c-date-picker label="Launch Date" @date="launchDate" @input="launchDateSelected" />
@@ -32,20 +37,16 @@
 				>
 					<v-card elevation="10" color="transparent" class="launch-card rounded-lg">
 						<v-card-title tag="h4" class="text-secondary bg-white">
-							{{ launch.mission_name }}
+							{{ launch?.mission_name || 'No Mission Name' }}
 						</v-card-title>
 						<v-card-text class="text-secondary">
-							<p>Launch Date: {{ formatDate(launch.launch_date_local) }}</p>
-							<p>
-								Launch Site:{{
-									launch.launch_site ? launch.launch_site.site_name : launch.launch_site
-								}}
-							</p>
-							<p>rocket : {{ launch.rocket.rocket_name }}</p>
+							<p>Launch Date: {{ formatDate(launch?.launch_date_local) }}</p>
+							<p>Launch Site:{{ launch?.launch_site?.site_name || 'No Launch Site' }}</p>
+							<p>rocket : {{ launch?.rocket?.rocket_name || 'No Rocket Name' }}</p>
 							<br />
 							<p class="text-body-2">Details :</p>
 							<p class="text-caption" style="overflow-y: scroll; height: 40px">
-								{{ launch.details }}
+								{{ launch?.details || 'No Details Available' }}
 							</p>
 						</v-card-text>
 						<v-divider />
@@ -74,6 +75,9 @@
 </template>
 
 <script lang="ts" setup>
+import { useFilter } from '~/composables/useFilter'
+import type { Launch } from '@/graphql/launchesQuery'
+const { filteredItems, filterItems } = useFilter()
 const store = useCounter()
 
 function formatDate(date: Date): string {
@@ -106,16 +110,26 @@ function formatDate(date: Date): string {
 	return `${month} ${day}, ${year}`
 }
 
+// filter
+const search = ref(null)
+filteredItems.value = filteredItems.value || []
+const onFilter = () => {
+	filterItems(store.launches, 'mission_name', search.value)
+	currentPage.value = 1
+	changePagination()
+}
+
 // pagination
 const currentPage = ref(1)
 const itemsPerPage = 8
-const totalPages = computed(() => Math.ceil(store.launches.length / itemsPerPage))
+const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage))
 
-const paginatedItems = computed(() => {
+const paginatedItems = computed<Launch[]>(() => {
 	const start = (currentPage.value - 1) * itemsPerPage
 	const end = start + itemsPerPage
-	return store.launches.slice(start, end)
+	return filteredItems.value.slice(start, end)
 })
+
 const launchDate = ref<string>('')
 const launchDateSelected = (date: string) => {
 	launchDate.value = date
@@ -138,6 +152,17 @@ function changePagination() {
 	}
 }
 
+onMounted(async () => {
+	await store.getLaunchesData()
+	if (store.launches && store.launches.length) {
+		changePagination()
+		onFilter()
+		console.log('Now launches available')
+	} else {
+		console.warn('No launches available')
+	}
+})
+
 watch(
 	() => store.loading,
 	() => {
@@ -146,13 +171,16 @@ watch(
 		}
 	},
 )
-
-onMounted(async () => {
-	await store.getLaunchesData()
-	if (store.launches) {
-		changePagination()
-	}
-})
+// for launches update
+watch(
+	() => store.launches,
+	(newLaunches) => {
+		if (newLaunches.length) {
+			onFilter()
+		}
+	},
+	{ immediate: true },
+)
 </script>
 
 <style scoped>
