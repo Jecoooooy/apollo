@@ -6,7 +6,8 @@
 					v-model="search"
 					label="search"
 					prepend-inner-icon="mdi-magnify"
-					@input="onFilter"
+					clearable
+					@update:modelValue="onFilter"
 				/>
 			</v-col>
 			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3">
@@ -23,7 +24,7 @@
 			</v-col>
 		</v-row>
 		<article class="position-relative h-100">
-			<TransitionGroup name="slide-card" tag="div" class="v-row align-stretch" mode="out-in">
+			<TransitionGroup name="slide-card" tag="div" class="v-row" mode="out-in">
 				<v-col
 					v-for="(launch, index) in paginatedItems"
 					v-show="hide[index]"
@@ -77,39 +78,40 @@
 <script lang="ts" setup>
 import { useFilter } from '~/composables/useFilter'
 import { useDebounce } from '~/composables/useDebounce'
+import { useDateFormatter } from '~/composables/useDateFormatter'
 import type { Launch } from '@/graphql/launchesQuery'
 const { filteredItems, filterItems } = useFilter()
 const store = useCounter()
+const { formatDate } = useDateFormatter()
+// function formatDate(date: Date): string {
+// 	const monthNames: string[] = [
+// 		'January',
+// 		'February',
+// 		'March',
+// 		'April',
+// 		'May',
+// 		'June',
+// 		'July',
+// 		'August',
+// 		'September',
+// 		'October',
+// 		'November',
+// 		'December',
+// 	]
+// 	const currentDate = new Date(date)
+// 	// let hours: number = currentDate.getHours()
+// 	// let minutes: number = currentDate.getMinutes()
+// 	const month: string = monthNames[currentDate.getMonth()]
+// 	let day: number = currentDate.getDate()
+// 	const year: number = currentDate.getFullYear()
 
-function formatDate(date: Date): string {
-	const monthNames: string[] = [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-		'August',
-		'September',
-		'October',
-		'November',
-		'December',
-	]
-	const currentDate = new Date(date)
-	// let hours: number = currentDate.getHours()
-	// let minutes: number = currentDate.getMinutes()
-	const month: string = monthNames[currentDate.getMonth()]
-	let day: number = currentDate.getDate()
-	const year: number = currentDate.getFullYear()
+// 	// hours = hours < 10 ? parseInt('0' + hours, 10) : hours
+// 	// minutes = minutes < 10 ? parseInt('0' + minutes, 10) : minutes
+// 	day = day < 10 ? parseInt('0' + day, 10) : day
 
-	// hours = hours < 10 ? parseInt('0' + hours, 10) : hours
-	// minutes = minutes < 10 ? parseInt('0' + minutes, 10) : minutes
-	day = day < 10 ? parseInt('0' + day, 10) : day
-
-	// return `${month} ${day}, ${year} - ${hours}:${minutes}`
-	return `${month} ${day}, ${year}`
-}
+// 	// return `${month} ${day}, ${year} - ${hours}:${minutes}`
+// 	return `${month} ${day}, ${year}`
+// }
 
 const debouncedOnFilter = useDebounce(() => {
 	filterItems(store.launches, 'mission_name', search.value)
