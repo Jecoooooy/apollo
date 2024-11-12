@@ -76,6 +76,7 @@
 
 <script lang="ts" setup>
 import { useFilter } from '~/composables/useFilter'
+import { useDebounce } from '~/composables/useDebounce'
 import type { Launch } from '@/graphql/launchesQuery'
 const { filteredItems, filterItems } = useFilter()
 const store = useCounter()
@@ -110,13 +111,18 @@ function formatDate(date: Date): string {
 	return `${month} ${day}, ${year}`
 }
 
-// filter
-const search = ref(null)
-filteredItems.value = filteredItems.value || []
-const onFilter = () => {
+const debouncedOnFilter = useDebounce(() => {
 	filterItems(store.launches, 'mission_name', search.value)
 	currentPage.value = 1
 	changePagination()
+}, 1000)
+
+// filter
+const search = ref(null)
+filteredItems.value = filteredItems.value || []
+
+const onFilter = () => {
+	debouncedOnFilter()
 }
 
 // pagination
@@ -156,7 +162,7 @@ onMounted(async () => {
 	await store.getLaunchesData()
 	if (store.launches && store.launches.length) {
 		changePagination()
-		onFilter()
+		filterItems(store.launches, 'mission_name', search.value)
 		console.log('Now launches available')
 	} else {
 		console.warn('No launches available')
@@ -176,7 +182,7 @@ watch(
 	() => store.launches,
 	(newLaunches) => {
 		if (newLaunches.length) {
-			onFilter()
+			filterItems(store.launches, 'mission_name', search.value)
 		}
 	},
 	{ immediate: true },
