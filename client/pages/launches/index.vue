@@ -11,7 +11,8 @@
 				/>
 			</v-col>
 			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3">
-				<c-date-picker label="Launch Date" @date="launchDate" @input="launchDateSelected" />
+				<c-date-picker label="Launch Date" @date="launchDate" @input="updateParentDate" />
+				<p class="text-white">{{ launchDate }}</p>
 			</v-col>
 			<v-col cols="12" sm="12" md="12" lg="4" xl="6" xxl="6" class="d-flex justify-end">
 				<v-pagination
@@ -40,13 +41,13 @@
 						<v-card-title tag="h4" class="text-secondary bg-white">
 							{{ launch?.mission_name || 'No Mission Name' }}
 						</v-card-title>
-						<v-card-text class="text-secondary">
+						<v-card-text class="text-secondary pt-2">
 							<p>Launch Date: {{ formatDate(launch?.launch_date_local) }}</p>
 							<p>Launch Site:{{ launch?.launch_site?.site_name || 'No Launch Site' }}</p>
 							<p>rocket : {{ launch?.rocket?.rocket_name || 'No Rocket Name' }}</p>
 							<br />
 							<p class="text-body-2">Details :</p>
-							<p class="text-caption" style="overflow-y: scroll; height: 40px">
+							<p class="text-caption" style="overflow-y: scroll; height: 56px">
 								{{ launch?.details || 'No Details Available' }}
 							</p>
 						</v-card-text>
@@ -80,69 +81,42 @@ import { useFilter } from '~/composables/useFilter'
 import { useDebounce } from '~/composables/useDebounce'
 import { useDateFormatter } from '~/composables/useDateFormatter'
 import type { Launch } from '@/graphql/launchesQuery'
-const { filteredItems, filterItems } = useFilter()
+
 const store = useCounter()
 const { formatDate } = useDateFormatter()
-// function formatDate(date: Date): string {
-// 	const monthNames: string[] = [
-// 		'January',
-// 		'February',
-// 		'March',
-// 		'April',
-// 		'May',
-// 		'June',
-// 		'July',
-// 		'August',
-// 		'September',
-// 		'October',
-// 		'November',
-// 		'December',
-// 	]
-// 	const currentDate = new Date(date)
-// 	// let hours: number = currentDate.getHours()
-// 	// let minutes: number = currentDate.getMinutes()
-// 	const month: string = monthNames[currentDate.getMonth()]
-// 	let day: number = currentDate.getDate()
-// 	const year: number = currentDate.getFullYear()
 
-// 	// hours = hours < 10 ? parseInt('0' + hours, 10) : hours
-// 	// minutes = minutes < 10 ? parseInt('0' + minutes, 10) : minutes
-// 	day = day < 10 ? parseInt('0' + day, 10) : day
+// filter
+const { filteredItems, filterItems } = useFilter()
+const search = ref(null)
+filteredItems.value = filteredItems.value || []
+const onFilter = () => {
+	debouncedOnFilter()
+}
 
-// 	// return `${month} ${day}, ${year} - ${hours}:${minutes}`
-// 	return `${month} ${day}, ${year}`
-// }
-
+// debounce
 const debouncedOnFilter = useDebounce(() => {
 	filterItems(store.launches, 'mission_name', search.value)
 	currentPage.value = 1
 	changePagination()
 }, 1000)
 
-// filter
-const search = ref(null)
-filteredItems.value = filteredItems.value || []
-
-const onFilter = () => {
-	debouncedOnFilter()
-}
-
 // pagination
 const currentPage = ref(1)
 const itemsPerPage = 8
 const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage))
-
 const paginatedItems = computed<Launch[]>(() => {
 	const start = (currentPage.value - 1) * itemsPerPage
 	const end = start + itemsPerPage
 	return filteredItems.value.slice(start, end)
 })
 
+// datePicker
 const launchDate = ref<string>('')
-const launchDateSelected = (date: string) => {
-	launchDate.value = date
-	console.log('Selected Launch Date:', launchDate.value)
+const updateParentDate = (newDate: string) => {
+	launchDate.value = newDate
 }
+
+// sort
 
 // launch card transistions
 const hide = ref<boolean[]>([])
