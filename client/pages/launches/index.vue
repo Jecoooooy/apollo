@@ -1,7 +1,7 @@
 <template>
 	<v-container class="position-relative h-100">
-		<v-row class="text-secondary py-4">
-			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3">
+		<v-row class="text-secondary pt-4">
+			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3" class="py-1">
 				<v-text-field
 					v-model="search"
 					label="search"
@@ -10,11 +10,33 @@
 					@update:modelValue="onFilter"
 				/>
 			</v-col>
-			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3">
-				<c-date-picker label="Launch Date" @date="launchDate" @input="updateParentDate" />
-				<p class="text-white">{{ launchDate }}</p>
+			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3" class="py-1">
+				<v-select
+					v-model="sortOrderBy"
+					label="Sort By Date:"
+					prepend-inner-icon="mdi-sort"
+					:items="['asc', 'desc']"
+					@update:modelValue="filterSort(sortOrderBy, dateFrom, dateTo)"
+				/>
 			</v-col>
-			<v-col cols="12" sm="12" md="12" lg="4" xl="6" xxl="6" class="d-flex justify-end">
+			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3" class="py-1">
+				<c-date-picker
+					label="Date From:"
+					@date="dateFrom"
+					@input="updateDateFrom"
+					@update:modelValue="filterSort(sortOrderBy, dateFrom, dateTo)"
+				/>
+				<p class="text-white">{{ dateFrom }}</p>
+			</v-col>
+			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3" class="py-1">
+				<c-date-picker
+					label="Date To:"
+					@date="dateTo"
+					@input="updateDateTo"
+					@update:modelValue="filterSort(sortOrderBy, dateFrom, dateTo)"
+				/>
+			</v-col>
+			<v-col cols="12" sm="12" md="12" lg="4" xl="6" xxl="6" class="d-flex justify-end py-1">
 				<v-pagination
 					v-model="currentPage"
 					class="mr-n1"
@@ -80,6 +102,7 @@
 import { useFilter } from '~/composables/useFilter'
 import { useDebounce } from '~/composables/useDebounce'
 import { useDateFormatter } from '~/composables/useDateFormatter'
+import { useSort } from '~/composables/useSort'
 import type { Launch } from '@/graphql/launchesQuery'
 
 const store = useCounter()
@@ -95,10 +118,10 @@ const onFilter = () => {
 
 // debounce
 const debouncedOnFilter = useDebounce(() => {
+	changePagination()
 	filterItems(store.launches, 'mission_name', search.value)
 	currentPage.value = 1
-	changePagination()
-}, 1000)
+}, 500)
 
 // pagination
 const currentPage = ref(1)
@@ -110,13 +133,32 @@ const paginatedItems = computed<Launch[]>(() => {
 	return filteredItems.value.slice(start, end)
 })
 
-// datePicker
-const launchDate = ref<string>('')
-const updateParentDate = (newDate: string) => {
-	launchDate.value = newDate
+// sort
+const sortOrderBy = ref('asc')
+const { sortByOrder, sortByDateRange } = useSort()
+const filterSort = (order = 'asc', dateFrom = '', dateTo = '') => {
+	changePagination()
+	filterItems(store.launches, 'mission_name', search.value)
+
+	const sortedFiltered = sortByOrder(filteredItems.value, 'launch_date_local', order)
+
+	if (dateFrom && dateTo) {
+		return sortByDateRange(sortedFiltered, 'launch_date_local', dateFrom, dateTo)
+	}
+	console.log('data filtered and sorted')
+
+	return sortedFiltered
 }
 
-// sort
+// datePicker
+const dateFrom = ref<string>('')
+const updateDateFrom = (newDate: string) => {
+	dateFrom.value = newDate
+}
+const dateTo = ref<string>('')
+const updateDateTo = (newDate: string) => {
+	dateFrom.value = newDate
+}
 
 // launch card transistions
 const hide = ref<boolean[]>([])
@@ -174,6 +216,7 @@ watch(
 
 .loader-container {
 	z-index: 1;
+	max-height: 500px;
 	top: 0;
 	left: 0;
 }
