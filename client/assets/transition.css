@@ -30,9 +30,9 @@
 }
 
 .slide-card-enter-from {
-	transform: translateY(100%) !important ;
+	transform: translateX(200%) !important ;
 	opacity: 0;
-	scale: 0%;
+	scale: -20%;
 }
 
 /* !--------------------------------- */
