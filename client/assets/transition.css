@@ -11,3 +11,64 @@
 	transform: translateY(20px) !important;
 	opacity: 0 !important;
 }
+
+/* !--------------------------------- */
+
+/* !            slide card            */
+
+/* !--------------------------------- */
+.slide-card-enter-active {
+	transition: all 0.3s ease-out;
+}
+
+.slide-card-leave-active {
+	/* transition: all 0.6s cubic-bezier(1, 0.5, 0.8, 1) ; */
+}
+
+.slide-card-leave-to {
+	display: none;
+}
+
+.slide-card-enter-from {
+	transform: translateY(100%) !important ;
+	opacity: 0;
+	scale: 0%;
+}
+
+/* !--------------------------------- */
+
+/* !            slide down            */
+
+/* !--------------------------------- */
+.slide-down-enter-active {
+	transition: all 0.3s ease-out !important;
+}
+
+.slide-down-leave-active {
+	transition: all 0.6s cubic-bezier(1, 0.5, 0.8, 1) !important;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+	transform: translateY(-30px) !important;
+	opacity: 0 !important;
+}
+
+/* !--------------------------------- */
+
+/* !            slide up              */
+
+/* !--------------------------------- */
+.slide-up-enter-active {
+	transition: all 0.3s ease-out !important;
+}
+
+.slide-up-leave-active {
+	transition: all 0.6s cubic-bezier(1, 0.5, 0.8, 1) !important;
+}
+
+.slide-up-enter-from,
+.slide-up-leave-to {
+	transform: translateY(30px) !important ;
+	opacity: 0 !important;
+}
