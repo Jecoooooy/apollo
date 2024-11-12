@@ -9,13 +9,13 @@ const store = useCounter()
 const route = useRoute()
 
 function dispalyTitle() {
-	console.log(route.name)
+	// console.log(route.name)
 
 	if (route.name === 'index') {
 		store.pageTitle = 'Home'
 	} else {
 		store.pageTitle = route.name ? String(route.name) : 'Unknown'
-		console.log(store.pageTitle)
+		// console.log(store.pageTitle)
 	}
 }
 
