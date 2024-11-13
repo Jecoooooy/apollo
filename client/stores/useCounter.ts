@@ -6,8 +6,11 @@ export const useCounter = defineStore('counter', {
 		drawer: false,
 		pageTitle: 'Home',
 		launches: [] as Launch[],
+		favorites: [] as Launch[],
 		loading: false,
-		windowWidth: process.client ? window.innerWidth : null,
+		panel: true,
+		windowWidth: process.client ? window.innerWidth : 0,
+		windowHeight: process.client ? window.innerHeight : 0,
 	}),
 	getters: {
 		doubleCount: (state) => state.count * 2,
@@ -18,7 +21,11 @@ export const useCounter = defineStore('counter', {
 		},
 		setWindowWidth(width: number) {
 			this.windowWidth = width
-			console.log(this.windowWidth)
+			// console.log(this.windowWidth)
+		},
+		setWindowHeight(height: number) {
+			this.windowHeight = height
+			// console.log(this.windowHeight)
 		},
 		getLaunchesData() {
 			this.loading = true
