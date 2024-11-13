@@ -13,6 +13,20 @@ export const GET_LAUNCHES_QUERY = gql`
 			rocket {
 				rocket_name
 				rocket_type
+				rocket {
+					name
+					description
+					first_flight
+					height {
+						feet
+					}
+					diameter {
+						meters
+					}
+					mass {
+						kg
+					}
+				}
 			}
 			details
 		}
@@ -32,6 +46,20 @@ export type Launch = {
 	rocket: {
 		rocket_name: string
 		rocket_type: string
+		rocket: {
+			name: string
+			description: string | null
+			first_flight: string | null
+			height: {
+				feet: number | null
+			} | null
+			diameter: {
+				meters: number | null
+			} | null
+			mass: {
+				kg: number | null
+			} | null
+		} | null
 	}
 	details: string | null
 }
