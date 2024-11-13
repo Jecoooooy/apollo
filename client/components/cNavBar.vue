@@ -1,5 +1,5 @@
 <template>
-	<v-navigation-drawer v-model="store.drawer" scrim class="navigation-style mt-4">
+	<v-navigation-drawer v-model="store.drawer" scrim class="navigation-style">
 		<v-list-item title="Appolo Application" subtitle="web" />
 		<v-divider />
 		<v-list color="primary">
@@ -35,6 +35,7 @@ onMounted(() => {})
 <style scope>
 .navigation-style {
 	backdrop-filter: blur(12px);
-	border-radius: 12px 12px 12px 0;
+
+	/* border-radius: 12px 12px 12px 0; */
 }
 </style>
