@@ -1,100 +1,134 @@
 <template>
-	<v-container class="position-relative h-100">
-		<v-row class="text-secondary pt-4">
-			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3" class="py-1">
-				<v-text-field
-					v-model="search"
-					label="search"
-					prepend-inner-icon="mdi-magnify"
-					clearable
-					@update:modelValue="onFilter"
-				/>
+	<v-container fluid>
+		<v-row class="h-100">
+			<v-col
+				cols="12"
+				lg="4"
+				xl="3"
+				class="pb-0 d-flex align-end justify-center"
+				:style="`min-height: ${store.windowHeight - 150}px`"
+			>
+				<div class="rounded-lg launch-card glow-effect custom-border pa-2 ma-2">
+					<div class="astronaut-container">
+						<img src="../../static/astronaut.png" alt="" />
+					</div>
+					<v-card
+						class="mx-auto w-100 rounded-lg mt-2"
+						prepend-icon="mdi-account"
+						subtitle="CEO"
+						max-width="400"
+					>
+						<v-card-text class="pt-0">
+							SpaceX designs, manufactures and launches advanced rockets and spacecraft. The
+							company was founded in 2002 to revolutionize space technology, with the ultimate
+							goal of enabling people to live on other planets.
+						</v-card-text>
+					</v-card>
+				</div>
 			</v-col>
-			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3" class="py-1">
-				<v-select
-					v-model="sortOrderBy"
-					label="Sort By Date:"
-					prepend-inner-icon="mdi-sort"
-					:items="['asc', 'desc']"
-					@update:modelValue="filterSort(sortOrderBy, dateFrom, dateTo)"
-				/>
-			</v-col>
-			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3" class="py-1">
-				<c-date-picker
-					label="Date From:"
-					@date="dateFrom"
-					@input="updateDateFrom"
-					@update:modelValue="filterSort(sortOrderBy, dateFrom, dateTo)"
-				/>
-				<p class="text-white">{{ dateFrom }}</p>
-			</v-col>
-			<v-col cols="12" sm="6" md="6" lg="4" xl="3" xxl="3" class="py-1">
-				<c-date-picker
-					label="Date To:"
-					@date="dateTo"
-					@input="updateDateTo"
-					@update:modelValue="filterSort(sortOrderBy, dateFrom, dateTo)"
-				/>
-			</v-col>
-			<v-col cols="12" sm="12" md="12" lg="4" xl="6" xxl="6" class="d-flex justify-end py-1">
-				<v-pagination
-					v-model="currentPage"
-					class="mr-n1"
-					:length="totalPages"
-					:total-visible="4"
-					@update:modelValue="changePagination()"
-				/>
+			<v-col cols="12" lg="8" xl="9">
+				<v-row no-gutters justify="end" align="center" class="pt-1 text-secondary">
+					<v-col cols="12" sm="12" md="7" lg="7" xl="6" xxl="6" class="pa-1">
+						<v-text-field
+							v-model="search"
+							label="search"
+							prepend-inner-icon="mdi-magnify"
+							clearable
+							class="d-inline-block w-75"
+							@update:modelValue="onFilter()"
+						/>
+						<v-select
+							v-model="sortOrderBy"
+							label="Sort By Date:"
+							prepend-inner-icon="mdi-sort"
+							:items="['asc', 'desc']"
+							class="d-inline-block w-25 pl-2"
+							@update:modelValue="onFilter()"
+						/>
+					</v-col>
+					<!-- <v-col cols="6" sm="6" md="6" lg="6" xl="6" xxl="6" class="pa-1 text-secondary"> -->
+					<v-spacer />
+					<v-pagination
+						v-model="currentPage"
+						class="pa-1"
+						:length="totalPages"
+						:total-visible="totalPageVisible"
+						@update:modelValue="changePagination()"
+					/>
+					<!-- </v-col> -->
+				</v-row>
+
+				<article class="position-relative h-100" style="min-height: 600px">
+					<transition name="slide-down" mode="out-in">
+						<div
+							v-if="!store.launches.length"
+							class="w-100 position-absolute d-flex flex-column justify-center align-center h-100 loader-container"
+						>
+							<div class="loader" />
+							<!-- <p class="text-white"><strong>Loading...</strong></p> -->
+						</div>
+					</transition>
+					<TransitionGroup
+						name="slide-card"
+						tag="div"
+						class="v-row v-row--no-gutters"
+						mode="out-in"
+					>
+						<v-col
+							v-for="(launch, index) in paginatedItems"
+							v-show="hide[index]"
+							:key="index"
+							class="pa-2"
+							cols="6"
+							sm="6"
+							md="4"
+							lg="4"
+							xl="3"
+							xxl="2"
+						>
+							<v-card elevation="10" color="transparent" class="launch-card rounded-lg">
+								<v-card-title tag="div" :class="store.windowWidth > 600 ? '' : ' px-2'">
+									<div style="max-width: 80%">
+										<h5 class="text-truncate">
+											{{ launch?.mission_name || 'No Mission Name' }}
+										</h5>
+									</div>
+									<v-btn icon>
+										<v-icon>mdi-star-outline</v-icon>
+										<v-tooltip activator="parent" location="top">Tooltip</v-tooltip>
+									</v-btn>
+								</v-card-title>
+								<v-card-text :class="store.windowWidth > 600 ? '' : 'pb-1 px-2'">
+									<p>Launch Date: {{ formatDate(launch?.launch_date_local) }}</p>
+									<p>
+										Launch Site:{{ launch?.launch_site?.site_name || 'No Launch Site' }}
+									</p>
+									<p>rocket : {{ launch?.rocket?.rocket_name || 'No Rocket Name' }}</p>
+									<p v-show="store.windowWidth > 600" class="pt-5">Details :</p>
+									<p
+										v-show="store.windowWidth > 600"
+										class="text-caption"
+										style="overflow-y: scroll; height: 56px"
+									>
+										{{ launch?.details || 'No Details Available' }}
+									</p>
+								</v-card-text>
+								<v-divider />
+								<v-card-actions>
+									<v-spacer />
+									<v-btn
+										:density="store.windowWidth > 961 ? 'default' : 'comfortable'"
+										color="secondary"
+										variant="elevated"
+										text="view Launch"
+									/>
+								</v-card-actions>
+							</v-card>
+						</v-col>
+					</TransitionGroup>
+				</article>
 			</v-col>
 		</v-row>
-		<article class="position-relative h-100">
-			<TransitionGroup name="slide-card" tag="div" class="v-row" mode="out-in">
-				<v-col
-					v-for="(launch, index) in paginatedItems"
-					v-show="hide[index]"
-					:key="index"
-					cols="6"
-					sm="6"
-					md="4"
-					lg="3"
-					xl="3"
-					xxl="2"
-				>
-					<v-card elevation="10" color="transparent" class="launch-card rounded-lg">
-						<v-card-title tag="h4" class="text-secondary bg-white">
-							{{ launch?.mission_name || 'No Mission Name' }}
-						</v-card-title>
-						<v-card-text class="text-secondary pt-2">
-							<p>Launch Date: {{ formatDate(launch?.launch_date_local) }}</p>
-							<p>Launch Site:{{ launch?.launch_site?.site_name || 'No Launch Site' }}</p>
-							<p>rocket : {{ launch?.rocket?.rocket_name || 'No Rocket Name' }}</p>
-							<br />
-							<p class="text-body-2">Details :</p>
-							<p class="text-caption" style="overflow-y: scroll; height: 56px">
-								{{ launch?.details || 'No Details Available' }}
-							</p>
-						</v-card-text>
-						<v-divider />
-						<v-card-actions>
-							<v-btn icon color="secondary" density="compact">
-								<v-icon>mdi-star-outline</v-icon>
-								<v-tooltip activator="parent" location="top">Tooltip</v-tooltip>
-							</v-btn>
-							<v-spacer />
-							<v-btn color="secondary" variant="elevated" text="view Launch" />
-						</v-card-actions>
-					</v-card>
-				</v-col>
-			</TransitionGroup>
-			<transition name="slide-down" mode="out-in">
-				<div
-					v-if="!store.launches.length"
-					class="w-100 position-absolute d-flex flex-column justify-center align-center h-100 loader-container"
-				>
-					<div class="loader" />
-					<p class="text-white"><strong>Loading...</strong></p>
-				</div>
-			</transition>
-		</article>
 	</v-container>
 </template>
 
@@ -120,61 +154,68 @@ const onFilter = () => {
 const debouncedOnFilter = useDebounce(() => {
 	changePagination()
 	filterItems(store.launches, 'mission_name', search.value)
+	setTimeout(() => {
+		filterSort(sortOrderBy.value)
+	}, 100)
 	currentPage.value = 1
 }, 500)
 
 // pagination
 const currentPage = ref(1)
-const itemsPerPage = 8
-const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage))
+const totalPageVisible = ref(4)
+const itemsPerPage = computed(() => {
+	if (store.windowWidth > 1919) {
+		return 8
+	} else if (store.windowWidth > 961 && store.windowWidth < 1920) {
+		return 6
+	} else if (store.windowWidth > 600 && store.windowWidth < 960) {
+		return 4
+	} else {
+		return 6
+	}
+})
+
+const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage.value))
 const paginatedItems = computed<Launch[]>(() => {
-	const start = (currentPage.value - 1) * itemsPerPage
-	const end = start + itemsPerPage
+	const start = (currentPage.value - 1) * itemsPerPage.value
+	const end = start + itemsPerPage.value
 	return filteredItems.value.slice(start, end)
 })
 
 // sort
 const sortOrderBy = ref('asc')
-const { sortByOrder, sortByDateRange } = useSort()
-const filterSort = (order = 'asc', dateFrom = '', dateTo = '') => {
+const { sortByOrder } = useSort()
+const filterSort = (order = 'asc') => {
 	changePagination()
 	filterItems(store.launches, 'mission_name', search.value)
-
 	const sortedFiltered = sortByOrder(filteredItems.value, 'launch_date_local', order)
-
-	if (dateFrom && dateTo) {
-		return sortByDateRange(sortedFiltered, 'launch_date_local', dateFrom, dateTo)
-	}
-	console.log('data filtered and sorted')
-
 	return sortedFiltered
-}
-
-// datePicker
-const dateFrom = ref<string>('')
-const updateDateFrom = (newDate: string) => {
-	dateFrom.value = newDate
-}
-const dateTo = ref<string>('')
-const updateDateTo = (newDate: string) => {
-	dateFrom.value = newDate
 }
 
 // launch card transistions
 const hide = ref<boolean[]>([])
 
 function changePagination() {
-	for (let index = 0; index < itemsPerPage; index++) {
+	for (let index = 0; index < itemsPerPage.value; index++) {
 		hide.value[index] = false
 	}
 	let delay = 300
-	for (let index = 0; index < itemsPerPage; index++) {
+	for (let index = 0; index < itemsPerPage.value; index++) {
 		setTimeout(() => {
 			hide.value[index] = true
 		}, delay)
 		delay += 100
 	}
 }
+
+// responsive height
+// const containerHeight = computed(()=>{
+// 	if (store.windowWidth < 600) {
+// 		store.windowHeight - 200
+// 	}else{
+// 		store.windowHeight - 300
+// 	}
+// } )
 
 onMounted(async () => {
 	await store.getLaunchesData()
@@ -216,8 +257,26 @@ watch(
 
 .loader-container {
 	z-index: 1;
-	max-height: 500px;
+	max-height: 500px !important;
 	top: 0;
 	left: 0;
+}
+
+.astronaut-container {
+	width: 100%;
+	position: relative;
+	height: 200px;
+}
+
+.astronaut-container img {
+	width: 100%;
+	bottom: 0;
+	position: absolute;
+	filter: drop-shadow(12px 0 20px rgb(255 255 255 / 43.8%));
+}
+
+.custom-border {
+	border-top-left-radius: 25% !important;
+	border-top-right-radius: 25% !important;
 }
 </style>
