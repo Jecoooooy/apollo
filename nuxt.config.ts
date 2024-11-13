@@ -21,8 +21,26 @@ export default defineNuxtConfig({
 			'@pinia/nuxt',
 			{
 				autoImports: ['defineStore', 'acceptHMRUpdate'],
+				plugins: process.client ? ['pinia-plugin-persistedstate'] : [],
 			},
 		],
 	],
-	css: ['vuetify/styles', '@mdi/font/css/materialdesignicons.css', 'assets/transition.css'],
+	css: [
+		'vuetify/styles',
+		'@mdi/font/css/materialdesignicons.css',
+		'assets/transition.css',
+		'assets/loaders.css',
+		'assets/responsive.css',
+		'assets/swal.css',
+	],
+	app: {
+		head: {
+			title: 'SpaceX',
+			link: [{ rel: 'icon', type: 'image/x-icon', href: '/client/static/SpaceXLogo.png' }],
+		},
+		pageTransition: {
+			name: 'page',
+			mode: 'out-in',
+		},
+	},
 })
