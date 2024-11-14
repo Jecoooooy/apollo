@@ -348,8 +348,6 @@ function scrollToTop(duration = 2000) {
 
 const router = useRouter()
 const goToRocketPage = (launch: Launch) => {
-	window.scrollTo({ top: 0, behavior: 'smooth' })
-	scrollToTop()
 	const rocketData = launch.rocket?.rocket || null
 	router.push({
 		// params: { id: launch.id },
@@ -396,6 +394,8 @@ const loadPage = () => {
 }
 
 onBeforeRouteLeave((_to, _from, next) => {
+	store.drawer = false
+	scrollToTop()
 	let delay = 1400
 	for (const key in pagetransition.value) {
 		if (Object.prototype.hasOwnProperty.call(pagetransition.value, key)) {
