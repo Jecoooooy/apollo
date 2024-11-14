@@ -5,13 +5,13 @@
 				cols="12"
 				lg="4"
 				xl="3"
-				class="pb-0 d-flex align-end justify-center"
+				:class="` ${store.windowWidth <= 1280 ? 'align-end' : 'align-center'} d-flex justify-center`"
 				:style="`min-height: ${store.windowHeight - 150}px`"
 			>
 				<transition name="slide-left" mode="out-in">
 					<div
 						v-show="pagetransition.astronautBackground"
-						class="rounded-lg launch-card glow-effect custom-border pa-6 ma-2 w-100"
+						class="rounded-lg launch-card glow-effect custom-border pa-6 ma-2 w-100 mb-n6"
 						style="transition: all 0.3s ease; min-height: 340px; max-width: 400px"
 					>
 						<transition name="slide-right" mode="out-in">
@@ -39,9 +39,18 @@
 					</div>
 				</transition>
 			</v-col>
-			<v-col cols="12" lg="8" xl="9" class="pt-16">
+			<v-col cols="12" lg="8" xl="9" class="pt-16 expand-height-animation">
 				<v-row no-gutters justify="end" align="center" class="pt-1 text-secondary">
-					<v-col cols="12" sm="12" md="7" lg="7" xl="6" xxl="6" class="pa-1">
+					<v-col
+						cols="12"
+						sm="12"
+						md="7"
+						lg="7"
+						xl="6"
+						xxl="6"
+						class="pa-1"
+						style="min-height: 56px"
+					>
 						<transition name="slide-down" mode="out-in">
 							<v-text-field
 								v-if="pagetransition.search"
@@ -66,7 +75,7 @@
 						</transition>
 					</v-col>
 					<v-spacer />
-					<transition name="slide-down" mode="out-in">
+					<transition name="slide-down" mode="out-in" tag="div" style="min-height: 56px">
 						<v-pagination
 							v-if="pagetransition.pagination"
 							v-model="currentPage"
@@ -121,7 +130,9 @@
 										<v-btn icon @click="openAddFavoritesDialog(launch)">
 											<v-icon v-if="changeFavIcon(launch?.id)">mdi-star-outline</v-icon>
 											<v-icon v-else>mdi-star</v-icon>
-											<v-tooltip activator="parent" location="top">Tooltip</v-tooltip>
+											<v-tooltip activator="parent" location="top">
+												Add to Favorites
+											</v-tooltip>
 										</v-btn>
 									</v-card-title>
 									<v-card-text :class="store.windowWidth > 600 ? '' : 'pb-1 px-2'">
@@ -416,7 +427,6 @@ watch(
 
 <style>
 .launch-card {
-	backdrop-filter: blur(8px);
 	backdrop-filter: blur(12px);
 	background-image: linear-gradient(-45deg, #092e7e3f, #bebebe7e) !important;
 	transition: all 0.2s ease;
@@ -445,5 +455,19 @@ watch(
 .custom-border {
 	border-top-left-radius: 25% !important;
 	border-top-right-radius: 25% !important;
+}
+
+.expand-height-animation {
+	animation: expand-height 1s ease-in-out forwards;
+}
+
+@keyframes expand-height {
+	from {
+		min-height: 0;
+	}
+
+	to {
+		min-height: 800px;
+	}
 }
 </style>

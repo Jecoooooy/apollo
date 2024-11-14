@@ -13,13 +13,13 @@
 			<v-app-bar-title style="filter: invert(1)">/ {{ store.pageTitle }}</v-app-bar-title>
 			<template v-if="store.windowWidth >= 1280" #append>
 				<v-list-item
-					v-for="(link, index) in routes"
+					v-for="(link, index) in links"
 					:key="index"
 					link
 					class="text-uppercase text-white rounded"
 					style="filter: invert(1)"
 					:title="link.name && typeof link.name === 'string' ? link.name : 'Home'"
-					:to="link.path"
+					:to="link.link"
 					@click="changeTitle(link.name as string)"
 				/>
 			</template>
@@ -30,6 +30,17 @@
 const store = useCounter()
 const route = useRoute()
 
+const links = ref([
+	{
+		name: 'Launches',
+		link: '/launches',
+	},
+	{
+		name: 'Favorites',
+		link: '/favorites',
+	},
+])
+
 function dispalyTitle() {
 	if (route.name === 'index') {
 		store.pageTitle = 'Home'
@@ -38,8 +49,7 @@ function dispalyTitle() {
 	}
 }
 
-const router = useRouter()
-const routes = router.options.routes || []
+// const router = useRouter()
 
 function changeTitle(item: string) {
 	if (item === 'index') {
