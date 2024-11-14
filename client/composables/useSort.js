@@ -1,5 +1,4 @@
 export const useSort = () => {
-	// Sorts by ascending or descending order
 	const sortByOrder = (array, dateKey, order = 'asc') => {
 		return array.sort((a, b) => {
 			const dateA = new Date(a[dateKey])

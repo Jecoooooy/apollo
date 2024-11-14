@@ -1,8 +1,8 @@
 export default defineNuxtRouteMiddleware((to) => {
-	console.log('Navigating to:', to.fullPath)
+	// console.log('Navigating to:', to.fullPath)
 
 	if (!to.matched.length) {
-		console.log('Route not matched, redirecting to home...')
+		// console.log('Route not matched, redirecting to home...')
 		return navigateTo('/launches')
 	}
 })
