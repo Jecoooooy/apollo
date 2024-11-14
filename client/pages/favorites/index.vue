@@ -26,7 +26,14 @@
 						<td>{{ item.rocket.rocket_name }}</td>
 						<td>{{ item.rocket.rocket_type }}</td>
 						<td>
-							<v-btn icon="mdi-delete" density="compact" rounded color="error" />
+							<v-btn
+								icon="mdi-delete"
+								density="comfortable"
+								variant="elevated"
+								rounded
+								color="error"
+								@click="removeItem(item.id as string)"
+							/>
 						</td>
 					</tr>
 				</tbody>
@@ -65,24 +72,56 @@ const paginatedItems = computed(() => {
 
 const openDialog = ref(false)
 function clearFavorites() {
-	store.favorites = []
+	if (store.favorites.length) {
+		store.favorites = []
+		const toast = Swal.mixin({
+			position: 'top-end',
+			showConfirmButton: false,
+			timer: 3000,
+			toast: true,
+			text: 'Nice!',
+		})
+		toast.fire({
+			icon: 'success',
+			title: 'All Records Deleted',
+			background: '#4CAF50',
+		})
+	} else {
+		const toast = Swal.mixin({
+			position: 'top-end',
+			showConfirmButton: false,
+			timer: 3000,
+			toast: true,
+			text: 'Opps!',
+		})
+		toast.fire({
+			icon: 'error',
+			title: 'No Records to Deleted',
+			background: '#B71C1C',
+		})
+	}
 
-	// for (let index = 0; index < store.favorites.length; index++) {
-	//     store.favorites.pop()
-	// }
-	const toast = Swal.mixin({
-		position: 'top-end',
-		showConfirmButton: false,
-		timer: 3000,
-		toast: true,
-		text: 'Nice!',
-	})
-	toast.fire({
-		icon: 'success',
-		title: 'All Records Deleted',
-		background: '#4CAF50',
-	})
 	openDialog.value = false
+}
+function removeItem(item: string) {
+	for (let index = 0; index < store.favorites.length; index++) {
+		const element = store.favorites[index]
+		if (element.id === item) {
+			store.favorites.splice(index, 1)
+			const toast = Swal.mixin({
+				position: 'top-end',
+				showConfirmButton: false,
+				timer: 3000,
+				toast: true,
+				text: 'Nice!',
+			})
+			toast.fire({
+				icon: 'success',
+				title: store.favorites[index].mission_name + 'is Deleted',
+				background: '#4CAF50',
+			})
+		}
+	}
 }
 </script>
 <style>
@@ -97,7 +136,6 @@ function clearFavorites() {
 
 .custom-table .v-table {
 	background-color: transparent;
-	backdrop-filter: blur(12px);
 	backdrop-filter: blur(12px);
 	background-image: linear-gradient(45deg, #fafafa65, #2121213f);
 	transition: all 0.2s ease;
