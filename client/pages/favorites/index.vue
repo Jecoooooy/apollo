@@ -98,6 +98,7 @@ function clearFavorites() {
 .custom-table .v-table {
 	background-color: transparent;
 	backdrop-filter: blur(12px);
+	backdrop-filter: blur(12px);
 	background-image: linear-gradient(45deg, #fafafa65, #2121213f);
 	transition: all 0.2s ease;
 }

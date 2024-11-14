@@ -1,28 +1,30 @@
 <template>
-	<v-app-bar app class="appbar-style" color="transparent" scroll-behavior="fully-hide">
-		<v-app-bar-nav-icon
-			v-if="store.windowWidth <= 1280"
-			rounded
-			style="filter: invert(1)"
-			@click="store.drawer = !store.drawer"
-		/>
-		<div class="image-container pl-4 ma-auto">
-			<img src="../static/SpaceXLogo.png" aspect-ratio="16/9" />
-		</div>
-		<v-app-bar-title style="filter: invert(1)">/ {{ store.pageTitle }}</v-app-bar-title>
-		<template v-if="store.windowWidth >= 1280" #append>
-			<v-list-item
-				v-for="(link, index) in routes"
-				:key="index"
-				link
-				class="text-uppercase text-white rounded"
+	<div>
+		<v-app-bar app class="appbar-style" color="transparent" scroll-behavior="fully-hide">
+			<v-app-bar-nav-icon
+				v-if="store.windowWidth <= 1280"
+				rounded
 				style="filter: invert(1)"
-				:title="link.name && typeof link.name === 'string' ? link.name : 'Home'"
-				:to="link.path"
-				@click="changeTitle(link.name as string)"
+				@click="store.drawer = !store.drawer"
 			/>
-		</template>
-	</v-app-bar>
+			<div class="image-container pl-4 ma-auto">
+				<img src="../static/SpaceXLogo.png" aspect-ratio="16/9" />
+			</div>
+			<v-app-bar-title style="filter: invert(1)">/ {{ store.pageTitle }}</v-app-bar-title>
+			<template v-if="store.windowWidth >= 1280" #append>
+				<v-list-item
+					v-for="(link, index) in routes"
+					:key="index"
+					link
+					class="text-uppercase text-white rounded"
+					style="filter: invert(1)"
+					:title="link.name && typeof link.name === 'string' ? link.name : 'Home'"
+					:to="link.path"
+					@click="changeTitle(link.name as string)"
+				/>
+			</template>
+		</v-app-bar>
+	</div>
 </template>
 <script lang="ts" setup>
 const store = useCounter()
@@ -37,7 +39,7 @@ function dispalyTitle() {
 }
 
 const router = useRouter()
-const routes = router.options.routes
+const routes = router.options.routes || []
 
 function changeTitle(item: string) {
 	if (item === 'index') {

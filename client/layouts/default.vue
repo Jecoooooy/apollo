@@ -9,9 +9,9 @@
 				style="transition: all 0.5s cubic-bezier(1, 0.5, 0.8, 1)"
 			/>
 		</transition>
-		<c-nav-bar v-if="store.windowWidth <= 1280" />
+		<c-nav-bar v-show="store.windowWidth <= 1280" />
 		<v-main v-if="pagetransition.main">
-			<slot />
+			<NuxtPage />
 		</v-main>
 		<transition name="slide-up" mode="out-in">
 			<c-footer v-if="pagetransition.footer" />
@@ -19,9 +19,7 @@
 	</v-app>
 </template>
 <script lang="ts" setup>
-// const route = useRoute();
 const store = useCounter()
-// const transitionKey = ref(`${route.path}-${Date.now()}`);
 const pagetransition = ref({
 	window: true,
 	navbar: false,
@@ -30,13 +28,6 @@ const pagetransition = ref({
 	footer: false,
 })
 const windowZoom = ref(true)
-
-// watch(
-// 	() => route.path,
-// 		(newRoute: string) => {
-// 			transitionKey.value = `${newRoute}-${Date.now()}`;
-// 		}
-// );
 
 const loadPage = () => {
 	let delay = 200

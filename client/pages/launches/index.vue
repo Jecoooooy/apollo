@@ -417,6 +417,7 @@ watch(
 <style>
 .launch-card {
 	backdrop-filter: blur(8px);
+	backdrop-filter: blur(12px);
 	background-image: linear-gradient(-45deg, #092e7e3f, #bebebe7e) !important;
 	transition: all 0.2s ease;
 }
