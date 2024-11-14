@@ -9,6 +9,7 @@
 					class="pa-1"
 					:length="totalPages"
 					:total-visible="totalPageVisible"
+					@update:model-value="changePagination()"
 				/>
 			</div>
 			<v-table fixed-header hover color="transparent">
@@ -20,8 +21,9 @@
 						<th width="100px">Actions</th>
 					</tr>
 				</thead>
-				<tbody>
-					<tr v-for="(item, index) in paginatedItems" :key="index">
+
+				<transition-group name="slide-table" mode="out-in" tag="tbody">
+					<tr v-for="(item, index) in paginatedItems" v-show="hide[index]" :key="index">
 						<td>{{ item.mission_name }}</td>
 						<td>{{ item.rocket.rocket_name }}</td>
 						<td>{{ item.rocket.rocket_type }}</td>
@@ -36,7 +38,7 @@
 							/>
 						</td>
 					</tr>
-				</tbody>
+				</transition-group>
 			</v-table>
 		</div>
 		<v-dialog v-model="openDialog" max-width="400">
@@ -68,6 +70,24 @@ const paginatedItems = computed(() => {
 	const start = (currentPage.value - 1) * itemsPerPage.value
 	const end = start + itemsPerPage.value
 	return store.favorites.slice(start, end)
+})
+const hide = ref<boolean[]>([])
+
+function changePagination() {
+	for (let index = 0; index < itemsPerPage.value; index++) {
+		hide.value[index] = false
+	}
+	let delay = 100
+	for (let index = 0; index < itemsPerPage.value; index++) {
+		setTimeout(() => {
+			hide.value[index] = true
+		}, delay)
+		delay += 100
+	}
+}
+
+onMounted(() => {
+	changePagination()
 })
 
 const openDialog = ref(false)
@@ -136,14 +156,43 @@ function removeItem(item: string) {
 
 .custom-table .v-table {
 	background-color: transparent;
-	backdrop-filter: blur(12px);
-	background-image: linear-gradient(45deg, #fafafa65, #2121213f);
 	transition: all 0.2s ease;
+	overflow-x: visible !important;
 }
 
 .custom-table td:nth-child(4) {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.custom-table tbody {
+	overflow-x: visible !important;
+}
+
+.custom-table {
+	overflow-x: visible !important;
+}
+
+.custom-table table {
+	overflow-x: visible !important;
+	border-spacing: 0 4px !important;
+}
+
+.custom-table tbody tr {
+	backdrop-filter: blur(12px);
+	background-image: linear-gradient(45deg, #fafafa65, #2121213f);
+
+	/* background-color: #424242; */
+	border-radius: 12px !important;
+	backdrop-filter: blur(12px);
+	overflow: hidden !important;
+	left: 0 !important;
+	position: relative;
+}
+
+.custom-table th:nth-child(3),
+.custom-table th:nth-child(2) {
+	width: 150px;
 }
 </style>

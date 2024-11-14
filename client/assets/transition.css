@@ -37,6 +37,29 @@
 
 /* !--------------------------------- */
 
+/* !            slide table           */
+
+/* !--------------------------------- */
+.slide-table-enter-active {
+	transition: all 01s ease;
+}
+
+.slide-table-leave-active {
+	/* transition: all 0.6s cubic-bezier(1, 0.5, 0.8, 1) ; */
+}
+
+.slide-table-leave-to {
+	display: none;
+}
+
+.slide-table-enter-from {
+	/* transform:  translateX(20px) !important ; */
+	opacity: 0;
+	scale: 0%;
+}
+
+/* !--------------------------------- */
+
 /* !            slide down            */
 
 /* !--------------------------------- */
