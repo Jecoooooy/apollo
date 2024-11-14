@@ -1,7 +1,8 @@
 <template>
 	<v-footer color="transparent" app class="px-4 py-2 footer-style text-body-2 text-center">
 		<h6 class="text-center w-100" style="filter: invert(1)">
-			This project is powered by: Nuxt, ES2020, Vuetify, GraphQL, Pinia and Vue3 - ©
+			This project is powered by: Nuxt, ES2020, Vuetify, GraphQL, Pinia and Vue3 - © Jerico B. Bencito
+			Front-end Developer
 			{{ new Date().getFullYear() }}
 		</h6>
 	</v-footer>
