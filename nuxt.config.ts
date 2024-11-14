@@ -3,13 +3,16 @@ import vuetify from 'vite-plugin-vuetify'
 
 export default defineNuxtConfig({
 	srcDir: 'client/',
+	ssr: true,
 	build: { transpile: ['vuetify'] },
 	imports: { dirs: ['./stores'] },
 	apollo: {
 		autoImports: true,
 		proxyCookies: true,
 		clients: {
-			default: { httpEndpoint: 'https://spacex-production.up.railway.app/' },
+			default: {
+				httpEndpoint: process.env.GRAPHQL_ENDPOINT || 'https://spacex-production.up.railway.app/',
+			},
 		},
 	},
 	vite: {
