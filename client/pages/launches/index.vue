@@ -343,31 +343,18 @@ const goToRocketPage = (launch: Launch) => {
 	// 	})
 	// );
 	// loadPage()
-
-	let delay = 1400
-	for (const key in pagetransition.value) {
-		if (Object.prototype.hasOwnProperty.call(pagetransition.value, key)) {
-			setTimeout(() => {
-				pagetransition.value[key as keyof typeof pagetransition.value] =
-					!pagetransition.value[key as keyof typeof pagetransition.value]
-			}, delay)
-			delay -= 200
-		}
-	}
-	setTimeout(() => {
-		router.push({
-			// params: { id: launch.id },
-			path: `/rocket/${launch.id}`,
-			query: {
-				rocketName: rocketData?.name || 'No Rocket Name',
-				rocketDescription: rocketData?.description || 'No Rocket Description',
-				rocketFirstFlight: rocketData?.first_flight || 'No First Flight Date',
-				rocketHeight: rocketData?.height?.feet || 'No Height Data',
-				rocketDiameter: rocketData?.diameter?.meters || 'No Diameter Data',
-				rocketMass: rocketData?.mass?.kg || 'No Mass Data',
-			},
-		})
-	}, 2000)
+	router.push({
+		// params: { id: launch.id },
+		path: `/rocket/${launch.id}`,
+		query: {
+			rocketName: rocketData?.name || 'No Rocket Name',
+			rocketDescription: rocketData?.description || 'No Rocket Description',
+			rocketFirstFlight: rocketData?.first_flight || 'No First Flight Date',
+			rocketHeight: rocketData?.height?.feet || 'No Height Data',
+			rocketDiameter: rocketData?.diameter?.meters || 'No Diameter Data',
+			rocketMass: rocketData?.mass?.kg || 'No Mass Data',
+		},
+	})
 }
 
 // page transition
@@ -399,6 +386,20 @@ const loadPage = () => {
 		}
 	}, delay)
 }
+
+onBeforeRouteLeave((_to, _from, next) => {
+	let delay = 1400
+	for (const key in pagetransition.value) {
+		if (Object.prototype.hasOwnProperty.call(pagetransition.value, key)) {
+			setTimeout(() => {
+				pagetransition.value[key as keyof typeof pagetransition.value] =
+					!pagetransition.value[key as keyof typeof pagetransition.value]
+			}, delay)
+			delay -= 200
+		}
+	}
+	setTimeout(() => next(), 2000) // Wait for the transition to finish
+})
 
 onMounted(async () => {
 	loadPage()
