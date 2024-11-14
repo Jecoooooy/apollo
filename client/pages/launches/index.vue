@@ -326,23 +326,31 @@ function changeFavIcon(item: string) {
 	}
 	return true
 }
+
+function scrollToTop(duration = 2000) {
+	const start = window.scrollY
+	const startTime = performance.now()
+
+	function animateScroll(currentTime: any) {
+		const elapsed = currentTime - startTime
+		const progress = Math.min(elapsed / duration, 1)
+		const easeInOut = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress
+
+		window.scrollTo(0, start - start * easeInOut)
+
+		if (progress < 1) {
+			requestAnimationFrame(animateScroll)
+		}
+	}
+
+	requestAnimationFrame(animateScroll)
+}
+
 const router = useRouter()
 const goToRocketPage = (launch: Launch) => {
+	window.scrollTo({ top: 0, behavior: 'smooth' })
+	scrollToTop()
 	const rocketData = launch.rocket?.rocket || null
-	// console.log(
-	// 	router.resolve({
-	// 		params: { id: launch.id }, // Dynamic route uses the [id] parameter
-	// 		query: {
-	// 			rocketName: rocketData?.name || 'No Rocket Name',
-	// 			rocketDescription: rocketData?.description || 'No Rocket Description',
-	// 			rocketFirstFlight: rocketData?.first_flight || 'No First Flight Date',
-	// 			rocketHeight: rocketData?.height?.feet || 'No Height Data',
-	// 			rocketDiameter: rocketData?.diameter?.meters || 'No Diameter Data',
-	// 			rocketMass: rocketData?.mass?.kg || 'No Mass Data',
-	// 		},
-	// 	})
-	// );
-	// loadPage()
 	router.push({
 		// params: { id: launch.id },
 		path: `/rocket/${launch.id}`,
@@ -398,7 +406,7 @@ onBeforeRouteLeave((_to, _from, next) => {
 			delay -= 200
 		}
 	}
-	setTimeout(() => next(), 2000) // Wait for the transition to finish
+	setTimeout(() => next(), 2000)
 })
 
 onMounted(async () => {
