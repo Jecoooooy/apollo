@@ -75,6 +75,11 @@ onUnmounted(() => {
 })
 </script>
 <style>
+/* stylelint-disable-next-line selector-class-pattern */
+.v-application__wrap {
+	min-height: 100svh !important;
+}
+
 .v-application {
 	background-image: linear-gradient(-30deg, rgb(255 255 255 / 0%), rgb(0 0 0)), url('../static/earth.jpg') !important;
 	background-position: center, center !important;
